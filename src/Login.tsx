@@ -1,21 +1,42 @@
 import BandhanMutual from './images/BandhanMutual.png';
 import './Login.css';
 import { useForm } from 'react-hook-form';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { FieldValues } from 'react-hook-form';
 
 const Login = () => {
+    const [userRole, setUserRole] = useState(null);
+    const navigate = useNavigate();
     const {
         register,
         handleSubmit,
         formState: { errors }
     } = useForm();
 
-    const onSubmit = (data: unknown) => {
-        console.log(data);
-   };
+    const onSubmit = async (data: FieldValues) => {
+        const { email, password } = data as { email: string; password: string; };
 
-   return (
+        const response = await fetch('/api/account/authenticate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
+
+        if (response.ok) {
+            const { role } = await response.json();
+            setUserRole(role);
+            navigate(`/${role}`);
+        } else {
+            // Handle login error
+        }
+    };
+
+
+
+    return (
     <div className="main-container">
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form className = "login-form" onSubmit={handleSubmit(onSubmit)}>
             <img src={BandhanMutual} className="logo"/>
             <h2 className='login-text'>Staff Login</h2>
             <div className="form-control">
