@@ -1,7 +1,8 @@
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { Login } from './Login';
-import { Admin } from './Admin';
+// import { Admin } from './Admin';
 import { Staff } from './Staff';
+import { ReminderProvider } from './ReminderContext';
 
 const App = () => {
   return (
@@ -11,13 +12,15 @@ const App = () => {
           path="/login" 
           element={ <Login /> } 
         />
-        /*<Route
+        {/* <Route
           path="/admin"
           element={ <Admin /> }
-        />*/
+        /> */}
         <Route 
           path="/staff" 
-          element={ <Staff /> }
+          element={ 
+          <ReminderProvider><Staff /></ReminderProvider>
+        }
         />
         <Route 
           path="/"
@@ -31,3 +34,18 @@ const App = () => {
 }
 
 export default App
+
+// import React from 'react';
+// import { ReminderProvider } from './ReminderContext';
+// import { Staff } from './Staff';
+// import './App.css';
+
+// const App: React.FC = () => {
+//   return (
+//     <ReminderProvider>
+//       <Staff />
+//     </ReminderProvider>
+//   );
+// };
+
+// export default App;

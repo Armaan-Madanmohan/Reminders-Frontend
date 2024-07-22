@@ -1,57 +1,69 @@
-import {ReminderInfo} from './types/ReminderInfo';
+import React, { useState } from 'react';
+import { ReminderInfo } from './types/ReminderInfo';
 import './Reminder.css';
-import { useState } from 'react';
+import { useReminderContext } from './ReminderContext';
+import { ReminderForm } from './ReminderForm';
 
-// search functionality
-
-interface ReminderDetailsProps extends ReminderInfo {
-  showAll: boolean;
+interface ReminderProps {
+  reminderInfo: ReminderInfo;
 }
 
-const ReminderDetails = ({ title, createdBy, deadline, description, interval, showAll }: ReminderDetailsProps) => {
-  const day: string = interval !== 1 ? "days" : "day";
-  return (
-    <>
-      <p className="reminder-title">{title}</p>
-      <p className="reminder-from">From: {createdBy}</p>
-      <p className="reminder-deadline">Deadline: {deadline}</p>
-      {showAll && (
-        <div className="reminder-details">
-          <p>{description}</p>
-          <p>Every {interval} {day}</p>
-        </div>
-      )}
-    </>
-  );
-};
-
-const Reminder = (prop: ReminderInfo) => {
+const Reminder: React.FC<ReminderProps> = ({ reminderInfo }) => {
   const [showDetails, setShowDetails] = useState(false);
+  const [showUpdateForm, setShowUpdateForm] = useState(false);
+  const { deleteReminder } = useReminderContext();
 
   const handleReminderClick = () => {
     setShowDetails(true);
-  }
+  };
 
   const handleCloseClick = () => {
     setShowDetails(false);
-  }
+  };
+
+  const handleDeleteClick = async () => {
+    try {
+      await deleteReminder(reminderInfo.id);
+      setShowDetails(false);
+    } catch (error) {
+      console.error('Error deleting reminder', error);
+    }
+  };
+
+  const handleUpdateClick = () => {
+    setShowUpdateForm(true);
+    setShowDetails(false);
+  };
+
+  const day = reminderInfo.interval !== 1 ? 'days' : 'day';
 
   return (
     <>
       <div className="reminder" onClick={handleReminderClick}>
-        <ReminderDetails {...prop} showAll={false} />
+        <p className="reminder-title">{reminderInfo.title}</p>
+        <p className="reminder-deadline">Deadline: {reminderInfo.deadline}</p>
+        <p className="reminder-interval">Every {reminderInfo.interval} {day}</p>
       </div>
       {showDetails && (
         <>
           <div className="overlay" onClick={handleCloseClick}></div>
-          <div className="reminder-details-popup">
-            <button onClick={handleCloseClick}>Close</button>
-            <ReminderDetails {...prop} showAll={true} />
+          <div className="popup">
+            <div className="popup-content">
+              <h2>{reminderInfo.title}</h2>
+              <p>{reminderInfo.description}</p>
+              <p>Deadline: {reminderInfo.deadline}</p>
+              <p>Interval: {reminderInfo.interval} {day}</p>
+              <button className="delete-button" onClick={handleDeleteClick}>Delete</button>
+              <button className="update-button" onClick={handleUpdateClick}>Update</button>
+              <button className="close-button" onClick={handleCloseClick}>Close</button>
+            </div>
           </div>
         </>
       )}
+      {showUpdateForm && <ReminderForm reminder={reminderInfo} onClose={() => setShowUpdateForm(false)} />}
     </>
   );
 };
 
 export { Reminder };
+

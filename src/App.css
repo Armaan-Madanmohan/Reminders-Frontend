@@ -1,4 +1,4 @@
-body {
+/* body {
   background: #093252;
   display: flex;
   justify-content: center;
@@ -6,4 +6,14 @@ body {
   height: 100vh;
   margin: 0;
 }
+ */
 
+body {
+  background: #093252;
+  color: #fff;
+  font-family: Arial, sans-serif;
+}
+
+h1 {
+  color: #fff;
+}

@@ -1,5 +1,0 @@
-const Admin = () => {
-  
-}
-
-export { Admin } 

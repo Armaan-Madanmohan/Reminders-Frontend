@@ -1,8 +1,7 @@
 export interface ReminderInfo {
   title: string;
-  description: string;
+  id: number;
   deadline: string;
-  createdBy: string;
-  assignedTo: string;
+  description: string;
   interval: number;
 }
